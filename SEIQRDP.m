@@ -1,4 +1,4 @@
-function [S,E,I,Q,R,D,P] = SEIQRDP(alpha,beta,gamma,delta,lambda0,kappa0,Npop,E0,I0,Q0,R0,D0,t,lambdaFun,kappaFun)
+function [S,E,I,Q,R,D,P] = SEIQRDP(alpha,beta,gamma,delta,lambda0,kappa0,Npop,S0,E0,I0,Q0,R0,D0,P0,t,lambdaFun,kappaFun)
 % [S,E,I,Q,R,D,P] = SEIQRDP(alpha,beta,gamma,delta,lambda,kappa,Npop,E0,I0,R0,D0,t,lambdaFun)
 % simulate the time-histories of an epidemic outbreak using a generalized
 % SEIR model.
@@ -37,13 +37,20 @@ function [S,E,I,Q,R,D,P] = SEIQRDP(alpha,beta,gamma,delta,lambda0,kappa0,Npop,E0
 %% Initial conditions
 N = numel(t);
 Y = zeros(7,N);
-Y(1,1) = Npop-Q0-E0-R0-D0-I0;
+if(isempty(S0))
+    Y(1,1) = Npop-Q0-E0-R0-D0-I0;
+else
+    Y(1,1) = S0;
+end
 Y(2,1) = E0;
 Y(3,1) = I0;
 Y(4,1) = Q0;
 Y(5,1) = R0;
 Y(6,1) = D0;
-
+if(~isempty(P0))
+    Y(7,1) = P0;
+end
+% Y(:,1)
 if round(sum(Y(:,1))-Npop)~=0
     error(['the sum must be zero because the total population',...
         ' (including the deads) is assumed constant']);
